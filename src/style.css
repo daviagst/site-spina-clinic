@@ -1,0 +1,26 @@
+:root {
+  font-family: Arial, sans-serif;
+  color: #263c32;
+  background: #f5f3ec;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+.setup {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(24px, 8vw, 120px);
+}
+.eyebrow { font-size: 12px; letter-spacing: 0.2em; }
+h1 {
+  max-width: 900px;
+  margin: 16px 0;
+  font: 400 clamp(42px, 7vw, 88px)/1.1 Georgia, serif;
+}
+p { line-height: 1.6; }
