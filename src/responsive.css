@@ -118,7 +118,8 @@ img { max-width: 100%; }
 @media (max-height: 560px) { .service-card { grid-template-rows: minmax(0, 1fr); } .service-card img { max-height: 100%; } }
 
 /* Elimina frestas de composição entre os painéis escuros. */
-html, body, main { background-color: #282f23; }
+html, body { background-color: #282f23; }
+main { background-color: #969e89; }
 .doctor-intro, .doctor, .services, .clinic-story { border: 0; outline: 0; }
 .doctor, .services, .clinic-story { box-shadow: 0 -2px 0 #282f23; }
 .menu-toggle { display: none; }
