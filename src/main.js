@@ -531,6 +531,12 @@ closingTitle.querySelectorAll(':scope > span').forEach((line) => {
     line.append(wrapper)
   })
 })
+// O alinhamento fica fora do elemento transformado para não acumular deslocamentos.
+const storyCenter = document.createElement('div')
+storyCenter.className = 'clinic-story__center'
+const centeredStoryCard = document.querySelector('.clinic-story__card')
+centeredStoryCard.before(storyCenter)
+storyCenter.append(centeredStoryCard)
 const clinicMotion = gsap.matchMedia()
 clinicMotion.add({
   motion: '(prefers-reduced-motion: no-preference)',
@@ -653,29 +659,37 @@ clinicMotion.add({
   storySection.append(...document.querySelectorAll('.clinic-story__title, .clinic-story__description'))
   gsap.set('.clinic-story__wall', { clipPath: 'inset(24% 0% 0% 0%)' })
   gsap.set('.clinic-story__card', {
-    y: () => window.innerHeight * 0.85, scale: 1,
+    y: () => storySection.clientHeight * 0.95, scale: 1,
     width: () => storyMobile() ? '78vw' : 'min(38vw, 460px)',
-    height: '82svh', top: '50%', transformOrigin: '50% 50%',
+    height: '82svh', x: 0, xPercent: 0, yPercent: 0, transformOrigin: '50% 50%',
   })
   gsap.set('.clinic-story__logo, .clinic-story__intro', { autoAlpha: 1, y: 0 })
   gsap.set('.clinic-story__picture', {
-    autoAlpha: 1, width: '66%', height: '48%', top: '50%', yPercent: -50,
+    autoAlpha: 1, width: '66%', height: '48%', top: '50%', x: 0, xPercent: -50, yPercent: -50,
   })
   gsap.set('.clinic-story__title, .clinic-story__description', { autoAlpha: 0, y: 24 })
+  // Primeiro revela o fundo; o card começa a entrar perto do fim da transição.
   gsap.timeline({ scrollTrigger: {
-    trigger: '.clinic-story', start: 'top top', end: '+=340%',
+    trigger: '.clinic-story', start: 'top 85%', end: 'top top',
+    scrub: 0.35, invalidateOnRefresh: true,
+  } })
+    .to('.clinic-story__wall', { clipPath: 'inset(0% 0% 0% 0%)', duration: 1, ease: 'none' }, 0)
+    .to('.clinic-story__card', {
+      y: () => storySection.clientHeight * 0.70, duration: 0.22, ease: 'none',
+    }, 0.78)
+  gsap.timeline({ scrollTrigger: {
+    trigger: '.clinic-story', start: 'top top', end: '+=290%',
     pin: true, scrub: 0.6, invalidateOnRefresh: true,
   } })
-    .to('.clinic-story__wall', { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.65, ease: 'none' })
-    .to({}, { duration: 0.2 })
-    // Le card arrive à taille constante, centré, avant de commencer à grandir.
-    .to('.clinic-story__card', { y: 0, duration: 1.1, ease: 'none' })
-    .to({}, { duration: 0.65 })
+    .fromTo('.clinic-story__card',
+      { y: () => storySection.clientHeight * 0.70 },
+      { y: 0, duration: 1, ease: 'none', immediateRender: false })
+    .to({}, { duration: 0.3 })
     .addLabel('expand')
     .to('.clinic-story__card', { scale: storyCoverScale, duration: 2.4, ease: 'none' })
     .to('.clinic-story__logo, .clinic-story__intro', { autoAlpha: 0, y: -25, duration: 0.85 }, 'expand+=0.7')
     .to('.clinic-story__picture', {
-      width: () => window.innerWidth * (storyMobile() ? 0.66 : 0.42) / storyCoverScale(),
+      width: () => storySection.clientWidth * (storyMobile() ? 0.66 : 0.42) / storyCoverScale(),
       height: () => storySection.clientHeight * (storyMobile() ? 0.44 : 0.94) / storyCoverScale(),
       duration: 2.4, ease: 'none',
     }, 'expand')
